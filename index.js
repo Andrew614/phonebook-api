@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
 
 let persons = [
     {
@@ -41,12 +44,45 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
     const id = req.params.id
-    const person = persons.find(p => p.id == id)
-    if (person) {
-        res.json(person)
+    const personToFind = persons.find(person => person.id == id)
+    if (personToFind) {
+        res.json(personToFind)
     } else {
         res.status(404).end()
     }
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    const name = body.name
+    const number = body.number
+    const id = Math.max(...persons.map(person => person.id)) + 1
+
+    if (!name) {
+        return res.status(400).json({
+            error: 'no name has been provided'
+        })
+    }
+    if (!number) {
+        return res.status(400).json({
+            error: 'no number has been specified'
+        })
+    }
+
+    personToAdd = {
+        name: name,
+        number: number,
+        id: id
+    }
+
+    persons = persons.concat(personToAdd)
+    res.json(personToAdd)
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    persons = persons.filter(person => person.id != id)
+    res.redirect('/api/persons')
 })
 
 const PORT = 3001
