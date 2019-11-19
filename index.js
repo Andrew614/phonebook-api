@@ -60,14 +60,21 @@ app.post('/api/persons', (req, res) => {
 
     if (!name) {
         return res.status(400).json({
-            error: 'no name has been provided'
+            error: 'missing name info'
         })
     }
     if (!number) {
         return res.status(400).json({
-            error: 'no number has been specified'
+            error: 'missing number info'
         })
     }
+    persons.map(person => {
+        if (person.name == name) {
+            return res.status(400).json({
+                error: `${name} already exists in contacts`
+            })
+        }
+    })
 
     personToAdd = {
         name: name,
