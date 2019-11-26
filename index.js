@@ -7,6 +7,7 @@ const cors = require('cors')
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('tiny'))
+app.use(express.static('build'))
 
 let persons = [
     {
